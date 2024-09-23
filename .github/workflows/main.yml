@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     name: New Relic
     needs: build
-    if: needs.build.result == 'success'
+    if: always()
     steps:
       # This step builds a var with the release tag value to use later
       - name: Set Release Version from Tag
