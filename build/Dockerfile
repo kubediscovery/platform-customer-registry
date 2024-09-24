@@ -1,6 +1,4 @@
-
 FROM golang:1.22-alpine AS build
-LABEL authors="rafaeltomelin"
 
 WORKDIR /app
 RUN apk update && apk add --no-cache git
@@ -21,7 +19,7 @@ RUN go mod download
 COPY . .
 
 WORKDIR /app/
-RUN go build -ldflags="-w -s" -o /app/api cmd/*
+RUN go build -ldflags="-w -s" -o /app/api cmd/main.go
 
 ##
 ## Deploy
@@ -30,11 +28,8 @@ FROM scratch
 WORKDIR /app
 
 COPY --from=build /app/api /app
-COPY --from=build /app/cmd/.config/config.yaml /app/cmd/.config/
 
 EXPOSE 8443
-EXPOSE 8082
-EXPOSE 50051
 
 # copy userus from build
 COPY --from=build /etc/passwd /etc/passwd

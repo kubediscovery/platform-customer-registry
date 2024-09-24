@@ -1,0 +1,54 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This service registry and controller new customer lab",
+        "title": "platform-customer-registry",
+        "contact": {
+            "name": "Rafael Tomelin",
+            "url": "https://local",
+            "email": "contato@synera.com.br"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/api",
+    "paths": {
+        "/registry": {
+            "post": {
+                "description": "create a new registry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "registry"
+                ],
+                "summary": "create a new customer registry",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

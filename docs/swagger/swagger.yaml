@@ -1,0 +1,36 @@
+basePath: /api
+info:
+  contact:
+    email: contato@synera.com.br
+    name: Rafael Tomelin
+    url: https://local
+  description: This service registry and controller new customer lab
+  title: platform-customer-registry
+  version: "1.0"
+paths:
+  /registry:
+    post:
+      consumes:
+      - application/json
+      description: create a new registry
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: create a new customer registry
+      tags:
+      - registry
+schemes:
+- http
+swagger: "2.0"
