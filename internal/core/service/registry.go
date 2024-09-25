@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"log"
+	"context"
 
 	"github.com/kubediscovery/platform-customer-registry/pkg/cache"
 	"github.com/kubediscovery/platform-customer-registry/pkg/otelpkg"
@@ -30,23 +30,12 @@ func (rs *RegistryService) Create(ctx context.Context , cr *entity.CustomerRegis
 	if err := cr.Validate(); err != nil {
 		return nil, err
 	}
-
-	result, err := rs.Search(cr)
-	if err != nil {
-		return nil, err
+	
+	if rs.HasLabRunning(ctx, cr) {
+		return nil, errors.New("the customer has one lab running")
 	}
-
-	if len(result) > 0 {
-		if result[0].ProjectName == cr.ProjectName &&
-			result[0].Repository == cr.Repository &&
-			result[0].UserName == cr.UserName &&
-			result[0].UserEmail == cr.UserEmail && 
-			result[0].IsValid{
-			return nil, errors.New("the customer has one lab running")
-		}
-	}
-
-	crr, err := entity.RegistryNewCustomer(cr)
+	
+	crr, err := entity.RegistryNewCustomer(*cr)
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +45,7 @@ func (rs *RegistryService) Create(ctx context.Context , cr *entity.CustomerRegis
 	// 	return nil, err
 	// }
 
+	// if err := rs.Cache.Set(crr.ID, crr); err != nil {}
 	return crr, nil
 }
 
@@ -70,6 +60,19 @@ func (rs *RegistryService) Search(cr *entity.CustomerRegistry) ([]entity.Custome
 	return nil, nil
 }
 
-func (rs *RegistryService) IsValid(cr *entity.CustomerRegistry) (*entity.CustomerRegistryResponse, error) {
-	return nil, nil
+func (rs *RegistryService) HasLabRunning(ctx context.Context, cr *entity.CustomerRegistry) (bool) {
+
+// 	result, err := rs.Search(cr)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	if result[0].ProjectName == cr.ProjectName &&
+// 	result[0].Repository == cr.Repository &&
+// 	result[0].UserName == cr.UserName &&
+// 	result[0].UserEmail == cr.UserEmail &&
+// 	rs.IsValid(ctx, cr) {
+// 	return nil, errors.New("the customer has one lab running")
+// }
+	return false
 }

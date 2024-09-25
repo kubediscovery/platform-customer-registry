@@ -13,7 +13,7 @@ type CustomerRegistryInterface interface {
 	List() ([]CustomerRegistryResponse, error)
 	Get(cr *CustomerRegistryResponse) (*CustomerRegistryResponse, error)
 	Search(cr *CustomerRegistry) ([]CustomerRegistryResponse, error)
-	IsValid(cr *CustomerRegistry) (*CustomerRegistryResponse, error)
+	HasLabRunning(ctx context.Context, cr *CustomerRegistry) (bool)
 }
 
 type CustomerRegistry struct {

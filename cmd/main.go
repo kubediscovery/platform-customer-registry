@@ -10,6 +10,7 @@ import (
 	"github.com/kubediscovery/platform-customer-registry/configs"
 	"github.com/kubediscovery/platform-customer-registry/pkg/otelpkg"
 	"github.com/kubediscovery/platform-customer-registry/pkg/cache"
+	"github.com/kubediscovery/platform-customer-registry/pkg/kb_db/kb_psql"
 	"github.com/kubediscovery/platform-customer-registry/internal/core/service"
 	_ "github.com/kubediscovery/platform-customer-registry/docs/swagger"
 	handler "github.com/kubediscovery/platform-customer-registry/internal/infra/handler/rest"
@@ -57,6 +58,22 @@ func main() {
 	}
 	// ENDS OTEL
 
+	// STARTS DB
+	dbPool, err :=	kb_psql.NewDBConnection(ctx, cfg.FileConfig.ConfigPath, cfg.FileConfig.FileName, cfg.FileConfig.Extentsion)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer dbPool.Close()
+
+	err = dbPool.Ping()
+	if err != nil {
+		log.Fatalln("error is ", err.Error())
+	}
+
+	log.Fatalln("pinging db", dbPool.Stats())
+	// ENDS DB
+
 	// STARTS CACHE
 	cc, err := cache.NewCacheConnection(cfg.FileConfig.ConfigPath, cfg.FileConfig.FileName, cfg.FileConfig.Extentsion)
 	if err != nil {
@@ -83,4 +100,5 @@ func main() {
 		log.Fatalln("error is: ", err.Error())
 	}
 
+	rest.Run(rest.Route.Handler())
 }

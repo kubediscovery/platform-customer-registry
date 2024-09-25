@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/synera-br/golang-cloud-collector/internal/core/service"
-	_ "github.com/synera-br/golang-cloud-collector/internal/core/entity"
-	"github.com/synera-br/golang-cloud-collector/pkg/otelpkg"
+
+	"github.com/kubediscovery/platform-customer-registry/internal/core/entity"
+	"github.com/kubediscovery/platform-customer-registry/pkg/otelpkg"
 )
 
 type CustomerRegistryHandlerHttpInterface interface {
@@ -74,7 +74,7 @@ func (obj *CustomerRegistryHandlerHttp) Create(c *gin.Context) {
 		return
 	}
 
-	if len(result) == 0 {
+	if result == nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": errors.New("not found")})
 		return
@@ -103,7 +103,7 @@ func (obj *CustomerRegistryHandlerHttp) List(c *gin.Context) {
 		return
 	}
 
-	if len(result) == 0 {
+	if result == nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": errors.New("not found")})
 		return
@@ -132,7 +132,7 @@ func (obj *CustomerRegistryHandlerHttp) Get(c *gin.Context) {
 		return
 	}
 
-	if len(result) == 0 {
+	if result == nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": errors.New("not found")})
 		return
@@ -161,7 +161,7 @@ func (obj *CustomerRegistryHandlerHttp) Search(c *gin.Context) {
 		return
 	}
 
-	if len(result) == 0 {
+	if result == nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": errors.New("not found")})
 		return
@@ -190,7 +190,7 @@ func (obj *CustomerRegistryHandlerHttp) IsValid(c *gin.Context) {
 		return
 	}
 
-	if len(result) == 0 {
+	if result == nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": errors.New("not found")})
 		return
