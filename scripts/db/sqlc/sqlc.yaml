@@ -1,0 +1,12 @@
+---
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "query.sql"
+    schema: "schema.sql"
+    gen:
+      go:
+        emit_json_tags: true
+        package: "dbsql"
+        out: "../dbsql"
+        sql_package: "database/sql"

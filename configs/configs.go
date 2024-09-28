@@ -6,7 +6,6 @@ import (
 	"runtime"
 
 	"github.com/spf13/viper"
-	_ "github.com/spf13/viper"
 )
 
 var AppConfig ConfigPath
@@ -58,7 +57,6 @@ func init() {
 }
 
 type Connections struct {
-
 	PathConfigFile string `mapstructure:"path_config_file"`
 	Paths          *ConfigPath
 	FileConfig     *FileConfig

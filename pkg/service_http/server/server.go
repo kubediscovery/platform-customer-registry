@@ -68,12 +68,12 @@ func (s *RestAPI) MiddlewareHeader(c *gin.Context) {
 
 func (s *RestAPI) ValidateToken(c *gin.Context) {
 
-	if c.GetHeader("Authorization") != s.Config.Token {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "not authorized"})
-		c.Writer.Flush()
-		c.Abort()
-		return
-	}
+	// if c.GetHeader("Authorization") != s.Config.Token {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "not authorized"})
+	// 	c.Writer.Flush()
+	// 	c.Abort()
+	// 	return
+	// }
 
 	c.Next()
 }

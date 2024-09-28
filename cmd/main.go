@@ -1,22 +1,21 @@
 package main
 
 import (
-	"log"
 	"context"
+	"log"
 
 	// "github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/newrelic/go-agent/v3/newrelic"
 
 	"github.com/kubediscovery/platform-customer-registry/configs"
-	"github.com/kubediscovery/platform-customer-registry/pkg/otelpkg"
+	_ "github.com/kubediscovery/platform-customer-registry/docs/swagger"
+	"github.com/kubediscovery/platform-customer-registry/internal/core/repository"
+	"github.com/kubediscovery/platform-customer-registry/internal/core/service"
+	handler "github.com/kubediscovery/platform-customer-registry/internal/infra/handler/rest"
 	"github.com/kubediscovery/platform-customer-registry/pkg/cache"
 	"github.com/kubediscovery/platform-customer-registry/pkg/kb_db/kb_psql"
-	"github.com/kubediscovery/platform-customer-registry/internal/core/service"
-	_ "github.com/kubediscovery/platform-customer-registry/docs/swagger"
-	handler "github.com/kubediscovery/platform-customer-registry/internal/infra/handler/rest"
+	"github.com/kubediscovery/platform-customer-registry/pkg/otelpkg"
 	http_server "github.com/kubediscovery/platform-customer-registry/pkg/service_http/server"
-
-
 )
 
 // @title        platform-customer-registry
@@ -59,7 +58,7 @@ func main() {
 	// ENDS OTEL
 
 	// STARTS DB
-	dbPool, err :=	kb_psql.NewDBConnection(ctx, cfg.FileConfig.ConfigPath, cfg.FileConfig.FileName, cfg.FileConfig.Extentsion)
+	dbPool, err := kb_psql.NewDBConnection(ctx, cfg.FileConfig.ConfigPath, cfg.FileConfig.FileName, cfg.FileConfig.Extentsion)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -70,8 +69,6 @@ func main() {
 	if err != nil {
 		log.Fatalln("error is ", err.Error())
 	}
-
-	log.Fatalln("pinging db", dbPool.Stats())
 	// ENDS DB
 
 	// STARTS CACHE
@@ -79,7 +76,6 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	// ENDS CACHE
 
 	// STARTS HTTP SERVER
@@ -89,8 +85,12 @@ func main() {
 	}
 	// ENDS HTTP SERVER
 
-
-	resitryService, err := service.NewRegistryService(nil, &cc, otl)
+	// STARTS CUSTOMER REGISTRY
+	resitryRepository, err := repository.NewRegistryRepository(dbPool, otl)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	resitryService, err := service.NewRegistryService(resitryRepository, &cc, otl)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -99,6 +99,23 @@ func main() {
 	if err != nil {
 		log.Fatalln("error is: ", err.Error())
 	}
+	// ENDS CUSTOMER REGISTRY
+
+	// STARTS LAB DESTROY
+	labRepository, err := repository.NewLabDestroyRepository(dbPool, otl)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	labService, err := service.NewServiceLabDestroy(&labRepository, &cc, otl)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	handler.NewLabDestroyHandlerHttp(&labService, otl, rest.RouterGroup, rest.ValidateToken)
+	if err != nil {
+		log.Fatalln("error is: ", err.Error())
+	}
+	// ENDS LAB DESTROY
 
 	rest.Run(rest.Route.Handler())
 }

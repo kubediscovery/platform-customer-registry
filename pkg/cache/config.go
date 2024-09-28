@@ -28,19 +28,19 @@ func NewCacheConnection(pathConfigFile, nameFileConfig, nameFileExtention string
 
 	opt, err := redis.ParseURL(fmt.Sprintf("redis://%s:%s@%s:%s/%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	cfg.Client = redis.NewClient(opt)
 
 	// Enable tracing instrumentation.
 	// if err := redisotel.InstrumentTracing(cfg.Client, ); err != nil {
-	// 	panic(err)
+	// 	return nil, err
 	// }
 
 	// Enable metrics instrumentation.
 	// if err := redisotel.InstrumentMetrics(cfg.Client); err != nil {
-	// 	panic(err)
+	// 	return nil, err
 	// }
 
 	return cfg, nil

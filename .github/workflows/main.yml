@@ -12,7 +12,7 @@ env:
   registry_password: ${{ secrets.REGISTRY_PASSWORD }}
   registry_host: ${{ vars.REGISTRY_HOST }}
   container_id: $(date +%s)
-  contaner_name: cloud-collector
+  contaner_name: platform-registry
   
 jobs:
 

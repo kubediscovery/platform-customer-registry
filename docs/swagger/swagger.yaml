@@ -1,4 +1,60 @@
 basePath: /api
+definitions:
+  github_com_kubediscovery_platform-customer-registry_internal_core_entity.CustomerRegistryResponse:
+    properties:
+      avaliable:
+        type: boolean
+      create_at:
+        type: string
+      email:
+        type: string
+      end_at:
+        type: string
+      id:
+        type: string
+      project_name:
+        type: string
+      repository:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - id
+    - project_name
+    - repository
+    - username
+    type: object
+  github_com_kubediscovery_platform-customer-registry_internal_core_entity.LabDestroyResponse:
+    properties:
+      avaliable:
+        type: boolean
+      created_at:
+        type: string
+      email:
+        type: string
+      error:
+        type: string
+      id:
+        type: string
+      project_name:
+        type: string
+      repository:
+        type: string
+      target_destroy:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    required:
+    - avaliable
+    - email
+    - id
+    - project_name
+    - repository
+    - username
+    type: object
 info:
   contact:
     email: contato@synera.com.br
@@ -8,7 +64,150 @@ info:
   title: platform-customer-registry
   version: "1.0"
 paths:
+  /labdestroy:
+    get:
+      consumes:
+      - application/json
+      description: get all lab destroy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_kubediscovery_platform-customer-registry_internal_core_entity.LabDestroyResponse'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: get all lab destroy
+      tags:
+      - labDestroy
+    post:
+      consumes:
+      - application/json
+      description: create a new lab destroy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_kubediscovery_platform-customer-registry_internal_core_entity.LabDestroyResponse'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: create a new lab destroy
+      tags:
+      - labDestroy
+  /labdestroy/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get a lab destroy by ID
+      parameters:
+      - description: found
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_kubediscovery_platform-customer-registry_internal_core_entity.LabDestroyResponse'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: get a lab destroy by ID
+      tags:
+      - labDestroy
+  /labdestroy/search:
+    get:
+      consumes:
+      - application/json
+      description: get a lab destroy by email or project
+      parameters:
+      - description: email@domain.com
+        in: query
+        name: email
+        type: string
+      - description: project_name
+        in: query
+        name: project
+        type: string
+      - description: username
+        in: query
+        name: username
+        type: string
+      - default: false
+        description: string default
+        in: query
+        name: available
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_kubediscovery_platform-customer-registry_internal_core_entity.LabDestroyResponse'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: get a lab destroy by email or project
+      tags:
+      - labDestroy
   /registry:
+    get:
+      consumes:
+      - application/json
+      description: get all customer registry
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_kubediscovery_platform-customer-registry_internal_core_entity.CustomerRegistryResponse'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: get all customer registry
+      tags:
+      - registry
     post:
       consumes:
       - application/json
@@ -19,7 +218,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: object
+            $ref: '#/definitions/github_com_kubediscovery_platform-customer-registry_internal_core_entity.CustomerRegistryResponse'
         "404":
           description: Not Found
           schema:
@@ -29,6 +228,35 @@ paths:
           schema:
             type: string
       summary: create a new customer registry
+      tags:
+      - registry
+  /registry/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get a customer registry by ID
+      parameters:
+      - description: found
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_kubediscovery_platform-customer-registry_internal_core_entity.CustomerRegistryResponse'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: get a customer registry by ID
       tags:
       - registry
 schemes:

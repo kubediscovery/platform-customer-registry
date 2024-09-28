@@ -9,9 +9,24 @@ func NewUuid() uuid.UUID {
 }
 
 func NewUuidString() string {
-	return uuid.New().String()
+	u, _ := uuid.NewV7()
+	return u.String()
 }
 
-func ParseUuid(id string) (uuid.UUID ,error ){
+func ParseUuid(id string) (uuid.UUID, error) {
 	return uuid.Parse(id)
+}
+
+func IsValid(id *string) bool {
+	u, err := uuid.Parse(*id)
+
+	if err != nil {
+		return false
+	}
+
+	if u.String() != *id {
+		return false
+	}
+
+	return true
 }

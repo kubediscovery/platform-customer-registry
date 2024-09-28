@@ -1,3 +1,12 @@
+migrate_create:
+	migrate create -ext sql -dir scripts/db/migrations/ -seq init
+
+migrate_up:
+	migrate -path=scripts/db/migrations -database "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable" -verbose up
+
+migrate_down:
+	migrate -path=scripts/db/migrations -database "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable" -verbose down
+
 build:
 	go build -o server main.go
 
@@ -15,7 +24,7 @@ run:
 	go run cmd/*
 
 sqlc:
-	cd infra/database/sqlc \
+	cd scripts/db/sqlc \
 	&& sqlc generate
 
 protobuf:

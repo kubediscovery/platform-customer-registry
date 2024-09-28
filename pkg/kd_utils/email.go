@@ -4,7 +4,7 @@ import (
 	"regexp"
 )
 
-func IsValidEmail(email string) bool {
+func IsValidEmail(email *string) bool {
 
 	// Define a regular expression for validating an email address.
 	const emailRegexPattern = `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
@@ -13,5 +13,5 @@ func IsValidEmail(email string) bool {
 	re := regexp.MustCompile(emailRegexPattern)
 
 	// Match the email string against the regular expression.
-	return re.MatchString(email)
+	return re.MatchString(*email)
 }

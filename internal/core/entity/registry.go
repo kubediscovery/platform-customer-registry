@@ -1,36 +1,35 @@
 package entity
 
 import (
-	"errors"
 	"context"
+	"errors"
+	"time"
+
 	"github.com/kubediscovery/platform-customer-registry/pkg/kd_utils"
 	"github.com/kubediscovery/platform-customer-registry/pkg/kd_uuid"
-	"time"
 )
 
 type CustomerRegistryInterface interface {
-	Create(ctx context.Context, cr *CustomerRegistry) (*CustomerRegistryResponse, error)
-	List() ([]CustomerRegistryResponse, error)
+	Create(ctx context.Context, cr *CustomerRegistryResponse) (*CustomerRegistryResponse, error)
+	GetAll(ctx context.Context) ([]CustomerRegistryResponse, error)
 	Get(cr *CustomerRegistryResponse) (*CustomerRegistryResponse, error)
-	Search(cr *CustomerRegistry) ([]CustomerRegistryResponse, error)
-	HasLabRunning(ctx context.Context, cr *CustomerRegistry) (bool)
+	GetByID(ctx context.Context, cr *string) (*CustomerRegistryResponse, error)
+	GetByFilter(cr *CustomerRegistry) ([]CustomerRegistryResponse, error)
 }
 
 type CustomerRegistry struct {
-	ProjectName string `json:'project_name' binding:'required'`
-	Repository  string `json:'repository' binding:'required'`
-	UserName    string `json:'username' binding:'required'`
-	UserEmail   string `json:'email' binding:'required'`
+	ProjectName string `json:"project_name" binding:"required"`
+	Repository  string `json:"repository" binding:"required"`
+	UserName    string `json:"username" binding:"required"`
+	UserEmail   string `json:"email" binding:"required,email"`
 }
 
 type CustomerRegistryResponse struct {
-	ID          string `json:'id' binding:'required'`
-	ProjectName string `json:'project_name' binding:'required'`
-	Repository  string `json:'repository' binding:'required'`
-	UserName    string `json:'username' binding:'required'`
-	UserEmail   string `json:'email' binding:'required'`
-	CreateAt    string `json:'create_at,omitempety'`
-	EndAt       string `json:'end_at,omitempety'`
+	ID        string `json:"id" binding:"required"`
+	CreateAt  string `json:"create_at,omitempty"`
+	EndAt     string `json:"end_at,omitempty"`
+	Avaliable bool   `json:"avaliable"`
+	CustomerRegistry
 }
 
 func (cr *CustomerRegistry) Validate() error {
@@ -51,7 +50,7 @@ func (cr *CustomerRegistry) Validate() error {
 		return errors.New("email is required")
 	}
 
-	if !kd_utils.IsValidEmail(cr.UserEmail) {
+	if !kd_utils.IsValidEmail(&cr.UserEmail) {
 		return errors.New("invalid email format")
 	}
 
@@ -72,7 +71,7 @@ func (cr *CustomerRegistryResponse) checkCreatAndEnd() error {
 		}
 
 		// Add one hour to the parsed time
-		endAtTime := createAtTime.Add(time.Hour)
+		endAtTime := createAtTime.Add(time.Minute)
 
 		// Format the new time back to string
 		cr.EndAt = endAtTime.Format(time.RFC3339)
@@ -89,11 +88,8 @@ func RegistryNewCustomer(cr CustomerRegistry) (*CustomerRegistryResponse, error)
 	}
 
 	crr := &CustomerRegistryResponse{
-		ID:          kd_uuid.NewUuidString(),
-		ProjectName: cr.ProjectName,
-		Repository:  cr.Repository,
-		UserName:    cr.UserName,
-		UserEmail:   cr.UserEmail,
+		ID:               kd_uuid.NewUuidString(),
+		CustomerRegistry: cr,
 	}
 
 	err = crr.checkCreatAndEnd()
